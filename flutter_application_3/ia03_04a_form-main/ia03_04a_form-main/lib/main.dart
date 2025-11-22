@@ -1,227 +1,202 @@
+// Llibreries necessàries per a Flutter i per al formulari
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+// Punt d'entrada de l'app
 void main() {
   runApp(const MyApp());
 }
 
+// Widget principal de l'aplicació
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'M0489 - Apps - Form (A)',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: MyHomePage(),
+      title: 'FormBuilder Demo',   // Títol de l'app
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const MyHomePage(),    // Pantalla principal
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
-  final String title = 'Salesians Sarrià 25/26';
+// Pantalla on es mostra el formulari
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  // Clau per controlar, validar i recuperar les dades del formulari
   final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
+        title: const Text("Form Builder"), // Títol superior
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            const FormTitle(),
-            FormBuilder(
-              key: _formKey,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //-------------------------------------------------
-                    FormLabelGroup(
-                      title: 'Please provide the speed of vehicle?',
-                      subtitle: 'please select one option given below',
-                    ),
-                    FormBuilderRadioGroup(
-                      decoration:
-                          const InputDecoration(border: InputBorder.none),
-                      name: "speed",
-                      orientation: OptionsOrientation.vertical,
-                      // separator: const Padding(padding: EdgeInsets.all(20)),
-                      options: const [
-                        FormBuilderFieldOption(value: 'abvoe 40km/h'),
-                        FormBuilderFieldOption(value: 'below 40km/h'),
-                        FormBuilderFieldOption(value: '0km/h')
-                      ],
-                      onChanged: (String? value) {
-                        debugPrint(value);
-                      },
-                    ),
-                    //-------------------------------------------------
-                    FormLabelGroup(title: 'Enter remarks'),
-                    FormBuilderTextField(
-                      name: 'remark',
-                      decoration: InputDecoration(
-                        hintText: 'Enter your remarks',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: const BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
-                          ),
-                        ),
-                        filled: true,
-                      ),
-                      onChanged: (String? value) {
-                        debugPrint(value);
-                      },
-                    ),
-                    //-------------------------------------------------
-                    FormLabelGroup(
-                      title: 'Please provide the high speed of vehicle?',
-                      subtitle: 'please select one option given below',
-                    ),
-                    FormBuilderDropdown(
-                      name: 'highspeed',
-                      decoration: InputDecoration(
-                        hintText: 'Select option',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      items: const [
-                        DropdownMenuItem(value: 'high', child: Text('High')),
-                        DropdownMenuItem(
-                            value: 'medium', child: Text('Medium')),
-                        DropdownMenuItem(value: 'low', child: Text('Low')),
-                      ],
-                      onChanged: (String? value) {
-                        debugPrint(value);
-                      },
-                    ),
-                    //-------------------------------------------------
-                    FormLabelGroup(
-                      title: 'Please provide the speed of vehicle past 1 hour?',
-                      subtitle: 'please select one or more options given below',
-                    ),
-                    FormBuilderCheckboxGroup(
-                      decoration:
-                          const InputDecoration(border: InputBorder.none),
-                      name: "selectSpeed",
-                      orientation: OptionsOrientation.vertical,
-                      // separator: const Padding(padding: EdgeInsets.all(20)),
-                      options: const [
-                        FormBuilderFieldOption(value: '20km/h'),
-                        FormBuilderFieldOption(value: '30km/h'),
-                        FormBuilderFieldOption(value: '40km/h'),
-                        FormBuilderFieldOption(value: '50km/h'),
-                      ],
-                      onChanged: (List<String>? value) {
-                        debugPrint(value.toString());
-                      },
-                    ),
+
+      // 
+      // COS PRINCIPAL AMB TOTS ELS CAMPS 
+      // 
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FormBuilder(
+          key: _formKey,  // Assigna la clau al formulari
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                // Títol gran del formulari
+                const FormTitle(title: "FORMULARI VEHICLES"),
+
+                // Subtítol
+                const FormLabelGroup(label: "Velocitat del vehicle"),
+
+                // GROUP 1 = RadioGroup (Seleccionar UNA opció)
+                FormBuilderRadioGroup(
+                  name: "vehicle_speed_radio",
+                  decoration: const InputDecoration(
+                    labelText: "Selecciona la velocitat actual",
+                  ),
+                  options: const [
+                    FormBuilderFieldOption(value: "Alta"),
+                    FormBuilderFieldOption(value: "Mitjana"),
+                    FormBuilderFieldOption(value: "Baixa"),
+                  ],
+                  onChanged: (value) => debugPrint("Radio → $value"),
+                ),
+
+                const SizedBox(height: 20),
+
+                // GROUP 2 = Camps de text
+                const FormLabelGroup(label: "Comentaris"),
+                FormBuilderTextField(
+                  name: "vehicle_comment",
+                  decoration: const InputDecoration(
+                    labelText: "Escriu alguna remarca",
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // GROUP 3 = Dropdown (Seleccionar UNA opció)
+                const FormLabelGroup(label: "Velocitat alta del vehicle"),
+                FormBuilderDropdown(
+                  name: "vehicle_speed_dropdown",
+                  decoration: const InputDecoration(
+                    labelText: "Selecciona un nivell",
+                  ),
+                  items: const [
+                    DropdownMenuItem(value: "High", child: Text("High")),
+                    DropdownMenuItem(value: "Medium", child: Text("Medium")),
+                    DropdownMenuItem(value: "Low", child: Text("Low")),
                   ],
                 ),
-              ),
+
+                const SizedBox(height: 20),
+
+                // GROUP 4 = CheckboxGroup (Seleccionar MÉS d'una opció)
+                const FormLabelGroup(label: "Velocitat última hora"),
+                FormBuilderCheckboxGroup(
+                  name: "vehicle_speed_checkbox",
+                  options: const [
+                    FormBuilderFieldOption(value: "Ràpida"),
+                    FormBuilderFieldOption(value: "Normal"),
+                    FormBuilderFieldOption(value: "Lenta"),
+                  ],
+                  onChanged: (value) =>
+                      debugPrint("Checkbox → ${value.toString()}"),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
+
+      // 
+      //  BOTÓ FLOTANT QUE ENVIA EL FORMULARI 
+      // 
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.upload),
-          onPressed: () {
-            _formKey.currentState?.saveAndValidate();
-            String? formString = _formKey.currentState?.value.toString();
-            alertDialog(context, formString!);
-          }),
+        child: const Icon(Icons.check),
+        onPressed: () {
+          // Guarda i valida totes les dades del formulari
+          _formKey.currentState?.saveAndValidate();
+
+          // Recupera totes les dades en format mapa
+          String? formString = _formKey.currentState?.value.toString();
+
+          // Mostra les dades en un AlertDialog
+          alertDialog(context, formString!);
+        },
+      ),
     );
   }
 }
 
-// ignore: must_be_immutable
-class FormLabelGroup extends StatelessWidget {
-  FormLabelGroup({super.key, required this.title, this.subtitle});
+//
+//  FUNCIÓ QUE MOSTRA LA FINESTRA POPUP AMB LES DADES 
+// 
+void alertDialog(BuildContext context, String formString) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Submission Completed"),  // Títol del Popup
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.check_circle, size: 40, color: Colors.green),
+            const SizedBox(height: 10),
+            Text(formString),  // Mostra totes les dades introduïdes
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context), // Tancar el popup
+            child: const Text("Tancar"),
+          ),
+        ],
+      );
+    },
+  );
+}
 
-  String title;
-  String? subtitle;
+// 
+// WIDGETS PERSONALITZATS PER TITOLS I SUBTITOLS 
+// 
 
-  Widget conditionalSubtitle(BuildContext context) {
-    if (subtitle != null) {
-      return Text(subtitle!,
-          style: Theme.of(context).textTheme.labelLarge?.apply(
-              fontSizeFactor: 1.25,
-              // ignore: deprecated_member_use
-              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5)));
-    } else {
-      return Container();
-    }
+class FormTitle extends StatelessWidget {
+  final String title;
+
+  const FormTitle({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    );
   }
+}
+
+class FormLabelGroup extends StatelessWidget {
+  final String label;
+
+  const FormLabelGroup({super.key, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 20.0, 0, 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelLarge
-                  ?.apply(fontSizeFactor: 1.25)),
-          conditionalSubtitle(context)
-        ],
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
       ),
     );
   }
 }
 
-class FormTitle extends StatelessWidget {
-  const FormTitle({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text(
-            'Form title',
-            style: Theme.of(context)
-                .textTheme
-                .displaySmall
-                ?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Text('description', style: Theme.of(context).textTheme.labelLarge),
-        ],
-      ),
-    );
-  }
-}
-
-void alertDialog(BuildContext context, String contentText) {
-  showDialog<String>(
-    context: context,
-    builder: (BuildContext context) => AlertDialog(
-      title: const Text("Submission Completed"),
-      icon: const Icon(Icons.check_circle),
-      content: Text(contentText),
-      actions: <Widget>[
-        TextButton(
-          onPressed: () => Navigator.pop(context, 'Tancar'),
-          child: const Text('Tancar'),
-        ),
-      ],
-    ),
-  );
-}
