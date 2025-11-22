@@ -3,247 +3,222 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
 void main() {
-  runApp(const MyApp()); // Inicia l’app carregant el widget MyApp
+  runApp(const MainApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Arrel de l'aplicació
     return MaterialApp(
-      title: 'SARA CONEJO DIAZ - Activitat 3',
+      title: 'Sara Conejo Diaz - FORM C',
       theme: ThemeData(
-        // Tema principal de l'app
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 217, 129, 233)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(), // Pantalla principal
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
-  final String title = 'SARA CONEJO DIAZ - Activitat 3';
+  final String title = 'Sara Conejo Diaz - FORM C';
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  // Clau que controla i valida el formulari
   final _formKey = GlobalKey<FormBuilderState>();
-
-  // Variable per comptar quants caràcters s'han escrit al text field
-  int textLength = 0;
+  int textFieldLength = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Barra superior
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple[100],
+        backgroundColor: Colors.purple[100],
         title: Text(widget.title),
       ),
-
-      // Contingut scrollable per evitar overflow
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(18.0),
-
-          // Formulari principal
+          padding: const EdgeInsets.all(20),
           child: FormBuilder(
-            key: _formKey, // Assignem la clau del formulari
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                //
-                // CHOICE CHIPS
-                
+                //---------------------------------------
+                // Choice Chips
+                //---------------------------------------
                 FormBuilderChoiceChips<String>(
-                  name: 'platform_choice', // Nom intern del camp
-                  initialValue: 'Flutter', // Valor per defecte
+                  name: 'choice_chips',
+                  initialValue: 'Flutter',
                   decoration: InputDecoration(
-                    labelText: 'Tria una plataforma',
+                    labelText: 'Choice Chips',
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-
-                  // Opcions que pot seleccionar l’usuari
                   options: const [
-                    FormBuilderChipOption(value: 'Flutter', child: Text('Flutter')),
-                    FormBuilderChipOption(value: 'Android', child: Text('Android')),
-                    FormBuilderChipOption(value: 'ChromeOS', child: Text('Chrome OS')),
+                    FormBuilderChipOption(
+                        value: 'Flutter', child: Text('Flutter')),
+                    FormBuilderChipOption(
+                        value: 'Android', child: Text('Android')),
+                    FormBuilderChipOption(
+                        value: 'Chrome OS', child: Text('Chrome OS')),
                   ],
-
-                  spacing: 10, // Espai entre xips
-                  runSpacing: 10, // Espai vertical entre files
-                  selectedColor: Colors.deepPurple[300],
-                  backgroundColor: Colors.deepPurple[100],
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  alignment: WrapAlignment.center,
+                  selectedColor: Colors.grey,
+                  backgroundColor: Colors.purple,
+                  labelStyle: const TextStyle(color: Colors.white),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 ),
-
                 const SizedBox(height: 20),
 
-                // SWITCH
-                //
+                //---------------------------------------
+                // Switch
+                //---------------------------------------
                 Container(
-                  // Decoració del contenidor del switch
-                  padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade500),
+                    border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(10),
                   ),
-
-                  // Títol i switch
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Activar notificacions",
-                        style: TextStyle(fontSize: 12, color: Colors.grey),
-                      ),
-
-                      // Switch integrat amb FormBuilder
+                      const Text('Switch',
+                          style: TextStyle(fontSize: 12, color: Colors.grey)),
                       FormBuilderSwitch(
-                        name: 'notifications_switch',
-                        title: const Text('Rebre notificacions'),
+                        name: 'switch',
+                        title: const Text('This is a switch'),
                         initialValue: false,
-                        decoration: const InputDecoration(border: InputBorder.none),
-                      )
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 20),
 
-                //
-                // TEXT FIELD
-                //
+                //---------------------------------------
+                // Text Field with validation
+                //---------------------------------------
                 FormBuilderTextField(
-                  name: 'username_field',
+                  name: 'text_field',
                   onChanged: (value) {
-                    // Actualitzem el recompte de caràcters escrits
                     setState(() {
-                      textLength = value?.length ?? 0;
+                      textFieldLength = value?.length ?? 0;
                     });
                   },
-
                   decoration: InputDecoration(
-                    labelText: 'Nom d\'usuari',
-                    helperText: 'Màxim 15 caràcters ($textLength/15)',
+                    labelText: 'Text Field',
+                    helperText:
+                        'Value must have a length less than or ... $textFieldLength/15',
                     border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
+                    errorBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red),
+                        borderRadius: BorderRadius.all(Radius.circular(10))),
                   ),
-
-                  // Validacions
                   validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),   // Obligatori
-                    FormBuilderValidators.maxLength(15), // Max 15 caràcters
+                    FormBuilderValidators.required(
+                        errorText: 'This field is required'),
+                    FormBuilderValidators.maxLength(15,
+                        errorText: 'Maximum 15 characters allowed'),
                   ]),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                 ),
-
                 const SizedBox(height: 20),
 
-                /
-                // DROPDOWN
-                //
+                //---------------------------------------
+                // Dropdown Field
+                //---------------------------------------
                 FormBuilderDropdown(
-                  name: 'dropdown_values', // Nom intern del camp
+                  name: 'dropdown_field',
                   decoration: const InputDecoration(
-                    labelText: 'Selecciona una opció',
+                    labelText: 'Dropdown Field',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                   ),
-
-                  // Llista d’opcions
-                  items: ['Opció A', 'Opció B', 'Opció C']
-                      .map(
-                        (opt) => DropdownMenuItem(
-                          value: opt,
-                          child: Text(opt),
-                        ),
-                      )
+                  items: ['Option 1', 'Option 2', 'Option 3', 'Option 4']
+                      .map((option) => DropdownMenuItem(
+                            value: option,
+                            child: Text(option),
+                          ))
                       .toList(),
                 ),
-
                 const SizedBox(height: 20),
 
-                //
-                // RADIO GROUP
-                //
+                //---------------------------------------
+                // Radio Group
+                //---------------------------------------
                 FormBuilderRadioGroup(
-                  name: 'radio_select',
+                  name: 'radio_group',
+                  orientation: OptionsOrientation.vertical,
                   decoration: const InputDecoration(
-                    labelText: 'Escull una resposta',
+                    labelText: 'Radio Group Model',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                   ),
-                  orientation: OptionsOrientation.vertical,
-
-                  // Opcions del RadioGroup
                   options: const [
-                    FormBuilderFieldOption(value: 'R1', child: Text('Resposta 1')),
-                    FormBuilderFieldOption(value: 'R2', child: Text('Resposta 2')),
-                    FormBuilderFieldOption(value: 'R3', child: Text('Resposta 3')),
+                    FormBuilderFieldOption(value: 'option1', child: Text('Option 1')),
+                    FormBuilderFieldOption(value: 'option2', child: Text('Option 2')),
+                    FormBuilderFieldOption(value: 'option3', child: Text('Option 3')),
+                    FormBuilderFieldOption(value: 'option4', child: Text('Option 4')),
                   ],
                 ),
-
-                const SizedBox(height: 25),
               ],
             ),
           ),
         ),
       ),
-
-      //
-      // BOTÓ flotant per enviar el formulari
-      //
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.send),
+        child: const Icon(Icons.upload),
         onPressed: () {
-          _formKey.currentState?.save(); // Guarda tot el formulari
-          final data = _formKey.currentState?.value ?? {}; // Dades recollides
+          _formKey.currentState?.save();
+          final formData = _formKey.currentState?.value ?? {};
 
-          // String amb totes les respostes
-          String summary = '''
-Platform: ${data['platform_choice']}
-Notificacions: ${data['notifications_switch']}
-Nom d'usuari: ${data['username_field']}
-Dropdown: ${data['dropdown_values']}
-Radio: ${data['radio_select']}
-''';
+          String formString = '''
+Choice Chips: ${formData['choice_chips'] ?? ''}
+Switch: ${formData['switch'] ?? false}
+Text Field: ${formData['text_field'] ?? ''}
+Dropdown Field: ${formData['dropdown_field'] ?? ''}
+Radio Group: ${formData['radio_group'] ?? ''}''';
 
-          showSummaryDialog(context, summary); // Mostra les dades
+          alertDialog(context, formString);
         },
       ),
     );
   }
 }
 
-//
-// FUNCIONS AUXILIARS
-//
-
-// Mostra un AlertDialog amb totes les respostes del formulari
-void showSummaryDialog(BuildContext context, String content) {
-  showDialog(
+// AlertDialog per mostrar el resum del formulari
+void alertDialog(BuildContext context, String contentText) {
+  showDialog<String>(
     context: context,
-    builder: (_) => AlertDialog(
-      title: const Text("Formulari enviat"),
-      icon: const Icon(Icons.check_circle, color: Colors.green, size: 45),
-      content: Text(content),
-      actions: [
+    builder: (BuildContext context) => AlertDialog(
+      title: const Text('Submission Completed'),
+      icon: const Icon(Icons.check_circle_outline, color: Colors.green, size: 50),
+      content: Text(contentText),
+      actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text("Tancar"),
+          onPressed: () => Navigator.pop(context, 'Close'),
+          child: const Text('Close'),
         ),
       ],
     ),
