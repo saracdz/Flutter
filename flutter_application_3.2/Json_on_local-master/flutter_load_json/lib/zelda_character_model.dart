@@ -15,15 +15,12 @@ class Character {
 
   factory Character.fromJson(Map<String, dynamic> json) {
     // El Zelda API no devuelve imagen ni game para characters.
-    // Usamos un placeholder para imagen y 'Unknown' para game.
-    const String placeholderImage =
-        'https://static.wikia.nocookie.net/zelda_gamepedia_en/images/8/85/Link_BotW.png';
-
+    // Dejamos imagen vacía para mostrar iniciales por defecto.
     return Character(
       id: (json['id'] ?? '').toString(),
       name: (json['name'] ?? 'Unknown').toString(),
       race: (json['race'] ?? 'Unknown').toString(),
-      image: (json['image'] ?? placeholderImage).toString(),
+      image: '', // Vacío para forzar iniciales
       game: (json['game'] ?? 'Unknown').toString(),
     );
   }

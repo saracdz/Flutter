@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Character> initialCharacters = [];
   bool isLoading = true;
   Map<String, int> ratings = {};
-  bool sortByRating = false;
+  int sortMode = 0; // 0=nombre, 1=rating, 2=race
 
   @override
   void initState() {
@@ -95,21 +95,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _toggleSort() {
     setState(() {
-      sortByRating = !sortByRating;
+      sortMode = (sortMode + 1) % 3; // Ciclo: 0→1→2→0
       _applySorting();
     });
   }
 
   void _applySorting() {
-    if (sortByRating) {
-      initialCharacters.sort((a, b) {
-        final ra = ratings[a.id] ?? 0;
-        final rb = ratings[b.id] ?? 0;
-        if (rb != ra) return rb.compareTo(ra);
-        return a.name.compareTo(b.name);
-      });
-    } else {
-      initialCharacters.sort((a, b) => a.name.compareTo(b.name));
+    switch (sortMode) {
+      case 1: // Rating
+        initialCharacters.sort((a, b) {
+          final ra = ratings[a.id] ?? 0;
+          final rb = ratings[b.id] ?? 0;
+          if (rb != ra) return rb.compareTo(ra);
+          return a.name.compareTo(b.name);
+        });
+        break;
+      case 2: // Race
+        initialCharacters.sort((a, b) {
+          final cmp = a.race.compareTo(b.race);
+          if (cmp != 0) return cmp;
+          return a.name.compareTo(b.name);
+        });
+        break;
+      default: // Nombre
+        initialCharacters.sort((a, b) => a.name.compareTo(b.name));
     }
   }
 
@@ -137,9 +146,17 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 0,
         actions: <Widget>[
           IconButton(
-            tooltip: sortByRating ? 'Ordenar por nombre' : 'Ordenar por rating',
+            tooltip: sortMode == 0
+                ? 'Ordenar por rating'
+                : sortMode == 1
+                    ? 'Ordenar por race'
+                    : 'Ordenar por nombre',
             icon: Icon(
-              sortByRating ? Icons.sort_by_alpha : Icons.star,
+              sortMode == 0
+                  ? Icons.sort_by_alpha
+                  : sortMode == 1
+                      ? Icons.star
+                      : Icons.category,
               color: Colors.white,
             ),
             onPressed: _toggleSort,

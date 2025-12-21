@@ -19,21 +19,64 @@ class CharacterCard extends StatefulWidget {
 }
 
 class _CharacterCardState extends State<CharacterCard> {
+  bool _imageLoadFailed = false;
+
+  String _getInitials(String name) {
+    return name
+        .split(' ')
+        .map((word) => word.isNotEmpty ? word[0].toUpperCase() : '')
+        .take(2)
+        .join();
+  }
 
   Widget get characterImage {
     return Hero(
       tag: widget.character.id,
-      child: Container(
-        width: 100.0,
-        height: 100.0,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(widget.character.image),
-          ),
-        ),
-      ),
+      child: widget.character.image.isEmpty || _imageLoadFailed
+          ? CircleAvatar(
+              radius: 50,
+              backgroundColor: const Color(0xFF97CE4C),
+              child: Text(
+                _getInitials(widget.character.name),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : Container(
+              width: 100.0,
+              height: 100.0,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: const Color(0xFF3C3E44),
+              ),
+              child: ClipOval(
+                child: Image.network(
+                  widget.character.image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    Future.microtask(
+                      () => setState(() => _imageLoadFailed = true),
+                    );
+                    return Container(
+                      color: const Color(0xFF97CE4C),
+                      child: Center(
+                        child: Text(
+                          _getInitials(widget.character.name),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
     );
   }
 

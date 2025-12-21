@@ -11,66 +11,86 @@ class CharacterDetailPage extends StatefulWidget {
 
 class _CharacterDetailPageState extends State<CharacterDetailPage> {
   final double characterAvatarSize = 150.0;
+  bool _imageLoadFailed = false;
+
+  String _getInitials(String name) {
+    return name
+        .split(' ')
+        .map((word) => word.isNotEmpty ? word[0].toUpperCase() : '')
+        .take(2)
+        .join();
+  }
 
   Widget get characterImage {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (ctx) {
-              return Scaffold(
-                backgroundColor: Colors.black,
-                appBar: AppBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  iconTheme: const IconThemeData(color: Colors.white),
-                ),
-                body: Center(
-                  child: Hero(
-                    tag: widget.character.id,
-                    child: InteractiveViewer(
-                      child: Image.network(widget.character.image),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
+      onTap: null, // Deshabilitado cuando son iniciales
       child: Hero(
         tag: widget.character.id,
-        child: Container(
-          height: characterAvatarSize,
-          width: characterAvatarSize,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: const [
-              BoxShadow(
-                offset: Offset(1.0, 2.0),
-                blurRadius: 2.0,
-                spreadRadius: -1.0,
-                color: Color(0x33000000),
+        child: widget.character.image.isEmpty || _imageLoadFailed
+            ? CircleAvatar(
+                radius: characterAvatarSize / 2,
+                backgroundColor: const Color(0xFF97CE4C),
+                child: Text(
+                  _getInitials(widget.character.name),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            : Container(
+                height: characterAvatarSize,
+                width: characterAvatarSize,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: const [
+                    BoxShadow(
+                      offset: Offset(1.0, 2.0),
+                      blurRadius: 2.0,
+                      spreadRadius: -1.0,
+                      color: Color(0x33000000),
+                    ),
+                    BoxShadow(
+                      offset: Offset(2.0, 1.0),
+                      blurRadius: 3.0,
+                      spreadRadius: 0.0,
+                      color: Color(0x24000000),
+                    ),
+                    BoxShadow(
+                      offset: Offset(3.0, 1.0),
+                      blurRadius: 4.0,
+                      spreadRadius: 2.0,
+                      color: Color(0x1f000000),
+                    ),
+                  ],
+                  color: const Color(0xFF3C3E44),
+                ),
+                child: ClipOval(
+                  child: Image.network(
+                    widget.character.image,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      Future.microtask(
+                        () => setState(() => _imageLoadFailed = true),
+                      );
+                      return Container(
+                        color: const Color(0xFF97CE4C),
+                        child: Center(
+                          child: Text(
+                            _getInitials(widget.character.name),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
-              BoxShadow(
-                offset: Offset(2.0, 1.0),
-                blurRadius: 3.0,
-                spreadRadius: 0.0,
-                color: Color(0x24000000),
-              ),
-              BoxShadow(
-                offset: Offset(3.0, 1.0),
-                blurRadius: 4.0,
-                spreadRadius: 2.0,
-                color: Color(0x1f000000),
-              ),
-            ],
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: NetworkImage(widget.character.image),
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -11,7 +11,6 @@ class AddCharacterFormPage extends StatefulWidget {
 class _AddCharacterFormPageState extends State<AddCharacterFormPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController raceController = TextEditingController();
-  TextEditingController imageController = TextEditingController();
 
   String gender = 'Unknown';
   final List<String> genderOptions = ['Male', 'Female', 'Unknown'];
@@ -27,10 +26,8 @@ void submitCharacter(BuildContext context) {
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: nameController.text,
       race: raceController.text.isNotEmpty ? raceController.text : 'Unknown',
-      image: imageController.text.isNotEmpty
-          ? imageController.text
-          : 'https://static.wikia.nocookie.net/zelda_gamepedia_en/images/8/85/Link_BotW.png',
-      game: 'Breath of the Wild', // exemple
+      image: '', // Imagen vacía para forzar iniciales
+      game: 'Custom',
     );
     Navigator.of(context).pop(newCharacter);
   }
@@ -69,22 +66,6 @@ void submitCharacter(BuildContext context) {
             ),
 
             // RACE
-                        // IMAGE URL
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: TextField(
-                            controller: imageController,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
-                              labelText: 'Image URL (optional)',
-                              labelStyle: TextStyle(color: Color(0xFF97CE4C)),
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey)),
-                              focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Color(0xFF97CE4C))),
-                            ),
-                          ),
-                        ),
             Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: TextField(
